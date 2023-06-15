@@ -31,7 +31,7 @@ const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
   }
 
   return (
-    <div className="modal">
+    <div className="modal" style={modalStyle}>
       <div className="modal-content">
         <h2>Create Task</h2>
         <form onSubmit={handleSubmit}>
@@ -55,6 +55,17 @@ const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
       </div>
     </div>
   );
+};
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  zIndex: '3',
+  backgroundColor: '#333333',
+  padding: '20px',
+  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
 };
 
 export default TaskModal;
