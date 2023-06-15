@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, addDays, subWeeks, addWeeks } from 'date-fns';
 
-const MyTable = () => {
+const Calendar = ({tasks}) => {
   const [cellColors, setCellColors] = useState(Array(7 * 3).fill('')); // Initialize cell colors as an array of empty strings
   const [startOfWeekDate, setStartOfWeekDate] = useState(startOfWeek(new Date())); // Calculate the start date of the current week
 
@@ -24,9 +24,21 @@ const MyTable = () => {
     border: '1px solid white', // Add a border to each cell
   };
 
+  const emptyCellStyle = {
+    height: '3em',
+    width: '3em',
+    maxWidth: '3em',
+    borderTop: '1px solid white', 
+    borderBottom: '1px solid white', 
+    whiteSpace: 'nowrap',
+    // overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  };
+
   const headerCellStyle = {
     fontWeight: 'bold',
   };
+  
 
   const daysOfWeek = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
@@ -59,7 +71,24 @@ const MyTable = () => {
           </tr>
         </thead>
         <tbody>
-          {[...Array(3)].map((_, rowIndex) => (
+          {tasks.length === 0 ? (
+              <tr>
+                {[...Array(7)].map((_, index) => {
+                return (
+                  <td
+                    key={index}
+                    style={{
+                      ...emptyCellStyle,
+                      ...(index === 0 && { borderLeft: '1px solid white' }),
+                      ...(index === 6 && { borderRight: '1px solid white' }),
+                    }}
+                  >
+                    {index === 0 && 'Create your first task today!'}
+                  </td>
+                );
+              })}
+              </tr>
+          ) : ([...Array(tasks.length)].map((_, rowIndex) => (
             <tr key={rowIndex}>
               {[...Array(7)].map((_, colIndex) => {
                 const cellIndex = rowIndex * 7 + colIndex; // Calculate the index of the cell in the flat array
@@ -78,7 +107,7 @@ const MyTable = () => {
                 );
               })}
             </tr>
-          ))}
+          )))}
         </tbody>
         <tfoot>
           <tr>
@@ -101,4 +130,4 @@ const MyTable = () => {
   );
 };
 
-export default MyTable;
+export default Calendar;

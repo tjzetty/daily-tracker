@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import TaskModal from './task_modal';
 
-const Tasks = () => {
-  const [tasks, setTasks] = useState([]);
+const Tasks = ({ tasks, setTasks }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleTaskCreate = (task) => {
@@ -30,7 +29,7 @@ const Tasks = () => {
       <table style={tableStyle}>
         <thead>
           <tr>
-            <th style={headerCellStyle}>Task</th>
+            <th style={headerCellStyle}>Tasks</th>
           </tr>
         </thead>
         <tbody>

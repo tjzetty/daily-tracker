@@ -8,8 +8,11 @@ const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
     setTaskName(event.target.value);
   };
 
-  const handleTimesPerWeekChange = (event) => {
-    setTimesPerWeek(event.target.value);
+  const handleTimesPerWeekChange = (e) => {
+    const value = e.target.value;
+    if (/^[0-7]$/.test(value) || value === '') {
+      setTimesPerWeek(value);
+    }
   };
 
   const handleSubmit = (event) => {
@@ -38,7 +41,13 @@ const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
           </label>
           <label>
             Times/Week:
-            <input type="number" value={timesPerWeek} onChange={handleTimesPerWeekChange} />
+            <input
+              type="number"
+              value={timesPerWeek}
+              onChange={handleTimesPerWeekChange}
+              min="0"
+              max="7"
+            />
           </label>
           <button type="submit">Create</button>
           <button type="button" onClick={onClose}>Cancel</button>
