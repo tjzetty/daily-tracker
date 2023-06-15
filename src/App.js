@@ -4,6 +4,7 @@ import './App.css';
 
 import Calendar from './components/calendar';
 import Tasks from './components/tasks';
+import Goals from './components/goals';
 
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <div className="flex-container">
           <Tasks tasks={tasks} setTasks={setTasks} />
           <Calendar tasks={tasks} />
+          <Goals tasks={tasks} />
         </div>
       </header>
     </div>
