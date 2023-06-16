@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import TaskModal from './task_modal';
 
-const Tasks = ({ tasks, setTasks }) => {
+const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleTaskCreate = (task) => {
-    setTasks((prevTasks) => [...prevTasks, task]);
+    const createTask = async () => {  
+      await db.add({
+        name: task.name,
+        timesPerWeek: task.timesPerWeek,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: user,
+      })
+    }
+    createTask();
+    // setTasks((prevTasks) => [...prevTasks, task]);
     setIsModalOpen(false);
   };
 
