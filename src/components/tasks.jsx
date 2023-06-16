@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import TaskModal from './task_modal';
 
 const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleTaskCreate = (task) => {
@@ -16,7 +17,7 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
     }
     createTask();
     // setTasks((prevTasks) => [...prevTasks, task]);
-    setIsModalOpen(false);
+    setIsCreateModalOpen(false);
   };
 
   const handleDeleteTask = (task) => {
@@ -32,15 +33,17 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
     deleteTask();
   };
 
-  const handleRenameTask = (index) => {
-    const newName = prompt('Enter a new name for the task:');
-    if (newName) {
-      setTasks((prevTasks) => {
-        const updatedTasks = [...prevTasks];
-        updatedTasks[index].name = newName;
-        return updatedTasks;
+  const handleEditTask = async (editedTask) => {
+    try {
+      console.log(editedTask.id);
+      await db.doc(editedTask.id).update({
+        name: editedTask.name,
+        timesPerWeek: editedTask.timesPerWeek,
       });
+    } catch (error) {
+      console.error('Error editing task:', error);
     }
+    setIsEditModalOpen(false);
   };
 
   const tableStyle = {
@@ -116,20 +119,21 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
                       </button>
                       <button
                         style={{ ...buttonStyle, top: '65%', backgroundColor: 'orange' }}
-                        onClick={() => handleRenameTask(task)}
+                        onClick={() => setIsEditModalOpen(true)}
                       >
                         ~
                       </button>
                     </div>
                   )}
                 </td>
+                <TaskModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onTaskSubmit={handleEditTask} submitString="Edit" task={task} />
               </tr>
             ))
           )}
         </tbody>
       </table>
-      <button onClick={() => setIsModalOpen(true)}>Create Task</button>
-      <TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onTaskCreate={handleTaskCreate} />
+      <button onClick={() => setIsCreateModalOpen(true)}>Create Task</button>
+      <TaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onTaskSubmit={handleTaskCreate} submitString="Create" />
     </div>
   );
 };

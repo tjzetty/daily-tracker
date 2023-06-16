@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
+const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
   const [taskName, setTaskName] = useState('');
   const [timesPerWeek, setTimesPerWeek] = useState('');
 
@@ -17,11 +17,21 @@ const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const task = {
-      name: taskName,
-      timesPerWeek: parseInt(timesPerWeek, 10),
-    };
-    onTaskCreate(task);
+    let newTask = null;
+    const timesPerWeekInt = parseInt(timesPerWeek, 10);
+    if (task) {
+      newTask = {
+        name: (taskName !== task.name) && (taskName !== "") ? taskName : task.name,
+        timesPerWeek: (timesPerWeekInt !== task.timesPerWeek) && (timesPerWeek !== "") ? timesPerWeekInt : task.timesPerWeek,
+        id: task.id,
+      };
+    } else {
+      newTask = {
+        name: taskName,
+        timesPerWeek: timesPerWeekInt,
+      };
+    }
+    onTaskSubmit(newTask);
     setTaskName('');
     setTimesPerWeek('');
   };
@@ -49,7 +59,7 @@ const TaskModal = ({ isOpen, onClose, onTaskCreate }) => {
               max="7"
             />
           </label>
-          <button type="submit">Create</button>
+          <button type="submit">{submitString}</button>
           <button type="button" onClick={onClose}>Cancel</button>
         </form>
       </div>
