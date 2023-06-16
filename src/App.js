@@ -27,11 +27,30 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const analytics = firebase.analytics();
-
+const taskConverter = {
+  toFirestore(task) {
+      return {
+          name: task.name,
+          timesPerWeek: task.timesPerWeek,
+          createdAt: task.createdAt,
+          uid: task.uid,
+      }
+  },
+  fromFirestore(snapshot, options) {
+      const data = snapshot.data(options)
+      return {
+          id: snapshot.id,
+          name: data.name,
+          timesPerWeek: data.timesPerWeek,
+          createdAt: data.createdAt,
+          uid: data.uid,
+      }
+  },
+}
 
 function App() {
   const [user] = useAuthState(auth);
-  const tasksRef = firestore.collection('tasks');
+  const tasksRef = firestore.collection('tasks').withConverter(taskConverter);
 
   const today = new Date();
   const year = today.getFullYear().toString().slice(-2);

@@ -19,12 +19,17 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
     setIsModalOpen(false);
   };
 
-  const handleDeleteTask = (index) => {
-    setTasks((prevTasks) => {
-      const updatedTasks = [...prevTasks];
-      updatedTasks.splice(index, 1);
-      return updatedTasks;
-    });
+  const handleDeleteTask = (task) => {
+    const deleteTask = async () => {
+      try {
+        const deletedName = task.name;
+        await db.doc(task.id).delete();
+        console.log(`Task, ${deletedName}, deleted successfully!`);
+      } catch (error) {
+        console.error('Error deleting task:', error);
+      }
+    };
+    deleteTask();
   };
 
   const handleRenameTask = (index) => {
@@ -105,13 +110,13 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
                     <div>
                       <button
                         style={{ ...buttonStyle, top: '35%', backgroundColor: 'red' }}
-                        onClick={() => handleDeleteTask(index)}
+                        onClick={() => handleDeleteTask(task)}
                       >
                         X
                       </button>
                       <button
                         style={{ ...buttonStyle, top: '65%', backgroundColor: 'orange' }}
-                        onClick={() => handleRenameTask(index)}
+                        onClick={() => handleRenameTask(task)}
                       >
                         ~
                       </button>
