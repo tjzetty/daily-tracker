@@ -27,6 +27,7 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const firestore = firebase.firestore();
 const analytics = firebase.analytics();
+
 const taskConverter = {
   toFirestore(task) {
       return {
@@ -48,9 +49,29 @@ const taskConverter = {
   },
 }
 
+const calendarConverter = {
+  toFirestore(calendar) {
+      return {
+          day: calendar.day,
+          tids: calendar.tids,
+          uid: calendar.uid,
+      }
+  },
+  fromFirestore(snapshot, options) {
+      const data = snapshot.data(options)
+      return {
+          id: snapshot.id,
+          day: data.day,
+          tids: data.tids,
+          uid: data.uid,
+      }
+  },
+}
+
 function App() {
   const [user] = useAuthState(auth);
   const tasksRef = firestore.collection('tasks').withConverter(taskConverter);
+  const calendarRef = firestore.collection('calendar').withConverter(calendarConverter);
 
   const today = new Date();
   const year = today.getFullYear().toString().slice(-2);
@@ -67,6 +88,7 @@ function App() {
             <TaskTable
               user={user}
               tasksRef={tasksRef}
+              calendarRef={calendarRef}
               firebase={firebase}
             />
           </div>
@@ -78,11 +100,13 @@ function App() {
   );
 }
 
-function TaskTable({ user, tasksRef, firebase }) {
-  const query = tasksRef.where('uid', '==', user.uid).orderBy('createdAt');
-  const [dbtasks, loadingTasks] = useCollectionData(query, { idField: 'id' });
+function TaskTable({ user, tasksRef, calendarRef, firebase }) {
+  const taskQuery = tasksRef.where('uid', '==', user.uid).orderBy('createdAt');
+  const [dbtasks, loadingTasks] = useCollectionData(taskQuery, { idField: 'id' });
+  const calQuery = calendarRef.where('uid', '==', user.uid);
+  const [dbcal, loadingCal] = useCollectionData(calQuery, { idField: 'id' });
 
-  if (loadingTasks) {
+  if (loadingTasks || loadingCal) {
     return (
       <div className="flex-container">
         <Tasks tasks={[]} />
@@ -94,8 +118,8 @@ function TaskTable({ user, tasksRef, firebase }) {
 
   return (
     <div className="flex-container">
-      <Tasks tasks={dbtasks} user={firebase.auth().currentUser.uid} db={tasksRef} firebase={firebase} />
-      <Calendar tasks={dbtasks} />
+      <Tasks tasks={dbtasks} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} firebase={firebase} />
+      <Calendar tasks={dbtasks} dbcal={dbcal} user={firebase.auth().currentUser.uid} calendarRef={calendarRef}/>
       <Goals tasks={dbtasks} />
     </div>
   );

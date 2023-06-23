@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
 import TaskModal from './task_modal';
 
-const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
+const Tasks = ({ tasks, user, tasksRef, firebase }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleTaskCreate = (task) => {
     const createTask = async () => {  
-      await db.add({
-        name: task.name,
-        timesPerWeek: task.timesPerWeek,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        uid: user,
-      })
-    }
+      try {
+        await tasksRef.add({
+          name: task.name,
+          timesPerWeek: task.timesPerWeek,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          uid: user,
+        })
+      } catch (error) {
+        console.error('Error creating task: ', error);
+      }
+    };
     createTask();
-    // setTasks((prevTasks) => [...prevTasks, task]);
     setIsCreateModalOpen(false);
   };
 
@@ -24,7 +27,7 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
     const deleteTask = async () => {
       try {
         const deletedName = task.name;
-        await db.doc(task.id).delete();
+        await tasksRef.doc(task.id).delete();
         console.log(`Task, ${deletedName}, deleted successfully!`);
       } catch (error) {
         console.error('Error deleting task:', error);
@@ -36,7 +39,7 @@ const Tasks = ({ tasks, setTasks, user, db, firebase }) => {
   const handleEditTask = async (editedTask) => {
     try {
       console.log(editedTask.id);
-      await db.doc(editedTask.id).update({
+      await tasksRef.doc(editedTask.id).update({
         name: editedTask.name,
         timesPerWeek: editedTask.timesPerWeek,
       });
