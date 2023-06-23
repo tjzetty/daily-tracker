@@ -34,6 +34,7 @@ const taskConverter = {
           name: task.name,
           timesPerWeek: task.timesPerWeek,
           createdAt: task.createdAt,
+          checks: task.checks,
           uid: task.uid,
       }
   },
@@ -44,6 +45,7 @@ const taskConverter = {
           name: data.name,
           timesPerWeek: data.timesPerWeek,
           createdAt: data.createdAt,
+          checks: data.checks,
           uid: data.uid,
       }
   },
@@ -119,7 +121,7 @@ function TaskTable({ user, tasksRef, calendarRef, firebase }) {
   return (
     <div className="flex-container">
       <Tasks tasks={dbtasks} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} firebase={firebase} />
-      <Calendar tasks={dbtasks} dbcal={dbcal} user={firebase.auth().currentUser.uid} calendarRef={calendarRef}/>
+      <Calendar tasks={dbtasks} dbcal={dbcal} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} calendarRef={calendarRef}/>
       <Goals tasks={dbtasks} />
     </div>
   );

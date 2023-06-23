@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, addDays, subWeeks, addWeeks, differenceInDays, startOfDay, isSameDay } from 'date-fns';
 
-const Calendar = ({tasks, dbcal, user, calendarRef}) => {
+const Calendar = ({tasks, dbcal, user, tasksRef, calendarRef}) => {
   const [cellColors, setCellColors] = useState(Array(7 * 3).fill('')); // Initialize cell colors as an array of empty strings
   const [startOfWeekDate, setStartOfWeekDate] = useState(startOfWeek(new Date())); // Calculate the start date of the current week
 
   useEffect(() => {
-    // Update the cell colors based on the dbcal data
     if (dbcal) {
       const updatedColors = Array(7 * 3).fill('');
       dbcal.forEach((doc) => {
@@ -67,6 +66,7 @@ const Calendar = ({tasks, dbcal, user, calendarRef}) => {
 
   const handleClick = async (index) => {
     const updatedColors = [...cellColors]; // Create a copy of cellColors array
+    let newChecks = updatedColors[index] === 'green' ? -1 : 1;
     updatedColors[index] = updatedColors[index] === 'green' ? '' : 'green'; // Toggle the clicked cell's color
   
     const colIndex = index % 7;
@@ -74,9 +74,11 @@ const Calendar = ({tasks, dbcal, user, calendarRef}) => {
     const date = addDays(startOfWeekDate, colIndex);
     const docDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const tid = tasks[rowIndex].id;
+    newChecks = newChecks + tasks[rowIndex].checks;
   
     try {
       await updateCalendarDocument(user, calendarRef, docDate, tid);
+      await tasksRef.doc(tid).update({checks: newChecks});
       setCellColors(updatedColors); // Update the state with the new array of colors
     } catch (error) {
       console.error(`Error in updating task completion: ${error}`);

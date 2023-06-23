@@ -13,6 +13,7 @@ const Tasks = ({ tasks, user, tasksRef, firebase }) => {
           name: task.name,
           timesPerWeek: task.timesPerWeek,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          checks: 0,
           uid: user,
         })
       } catch (error) {
