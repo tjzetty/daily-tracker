@@ -95,7 +95,7 @@ function App() {
             />
           </div>
         ) : (
-          <SignIn firebase={firebase} auth={auth} />
+          <SignIn firebase={firebase} auth={auth} analytics={analytics}/>
         )}
       </header>
     </div>
@@ -120,8 +120,8 @@ function TaskTable({ user, tasksRef, calendarRef, firebase }) {
 
   return (
     <div className="flex-container">
-      <Tasks tasks={dbtasks} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} firebase={firebase} />
-      <Calendar tasks={dbtasks} dbcal={dbcal} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} calendarRef={calendarRef}/>
+      <Tasks analytics={analytics} tasks={dbtasks} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} firebase={firebase}/>
+      <Calendar analytics={analytics} tasks={dbtasks} dbcal={dbcal} user={firebase.auth().currentUser.uid} tasksRef={tasksRef} calendarRef={calendarRef}/>
       <Goals tasks={dbtasks} />
     </div>
   );

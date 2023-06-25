@@ -1,9 +1,10 @@
 import React from 'react';
 
-function SignIn({ firebase, auth }) {
+function SignIn({ firebase, auth, analytics }) {
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth.signInWithPopup(provider);
+    analytics.logEvent('login');
   };
 
   return (

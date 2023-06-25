@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { format, startOfWeek, addDays, subWeeks, addWeeks, differenceInDays, startOfDay, isSameDay } from 'date-fns';
 
-const Calendar = ({tasks, dbcal, user, tasksRef, calendarRef}) => {
+const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
   const [cellColors, setCellColors] = useState(Array(7 * 3).fill('')); // Initialize cell colors as an array of empty strings
   const [startOfWeekDate, setStartOfWeekDate] = useState(startOfWeek(new Date())); // Calculate the start date of the current week
 
@@ -24,9 +24,30 @@ const Calendar = ({tasks, dbcal, user, tasksRef, calendarRef}) => {
           });
         }
       });
+
       setCellColors(updatedColors);
+      updateMissedTasks(updatedColors);
     }
   }, [dbcal, tasks, startOfWeekDate]);
+
+  const updateMissedTasks = (greenCellColors) => {
+    const updatedColors = [...greenCellColors];
+
+    tasks.forEach((task, rowIndex) => {
+      const createdAt = task.createdAt.toDate();
+
+      for (let colIndex = 0; colIndex < 7; colIndex++) {
+        const cellIndex = rowIndex * 7 + colIndex;
+        const currentDate = addDays(startOfWeekDate, colIndex);
+
+        if (currentDate > createdAt && updatedColors[cellIndex] !== 'green' && currentDate < startOfDay(new Date())) {
+          updatedColors[cellIndex] = 'red';
+        }
+      }
+    });
+
+    setCellColors(updatedColors);;
+  };
 
   const updateCalendarDocument = async (user, calendarRef, docDate, tid) => {
     const matchingDoc = dbcal.find((doc) => {
@@ -66,14 +87,16 @@ const Calendar = ({tasks, dbcal, user, tasksRef, calendarRef}) => {
 
   const handleClick = async (index) => {
     const updatedColors = [...cellColors]; // Create a copy of cellColors array
-    let newChecks = updatedColors[index] === 'green' ? -1 : 1;
-    updatedColors[index] = updatedColors[index] === 'green' ? '' : 'green'; // Toggle the clicked cell's color
+    const wasGreen = updatedColors[index] === 'green';
+    updatedColors[index] = wasGreen ? '' : 'green'; // Toggle the clicked cell's color
   
     const colIndex = index % 7;
     const rowIndex = Math.floor(index / 7);
     const date = addDays(startOfWeekDate, colIndex);
     const docDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     const tid = tasks[rowIndex].id;
+
+    let newChecks = wasGreen ? -1 : 1;
     newChecks = newChecks + tasks[rowIndex].checks;
   
     try {
@@ -82,6 +105,8 @@ const Calendar = ({tasks, dbcal, user, tasksRef, calendarRef}) => {
       setCellColors(updatedColors); // Update the state with the new array of colors
     } catch (error) {
       console.error(`Error in updating task completion: ${error}`);
+    } finally {
+      analytics.logEvent('taskUpdated', {tid: tid, check: wasGreen ? 'unchecked' : 'checked'});
     }
   };
 

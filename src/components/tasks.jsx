@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TaskModal from './task_modal';
 
-const Tasks = ({ tasks, user, tasksRef, firebase }) => {
+const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -18,6 +18,8 @@ const Tasks = ({ tasks, user, tasksRef, firebase }) => {
         })
       } catch (error) {
         console.error('Error creating task: ', error);
+      } finally {
+        analytics.logEvent('createdTask', {tid: task.id});
       }
     };
     createTask();
@@ -25,13 +27,16 @@ const Tasks = ({ tasks, user, tasksRef, firebase }) => {
   };
 
   const handleDeleteTask = (task) => {
+    
     const deleteTask = async () => {
+      const deletedName = task.name;
       try {
-        const deletedName = task.name;
         await tasksRef.doc(task.id).delete();
         console.log(`Task, ${deletedName}, deleted successfully!`);
       } catch (error) {
         console.error('Error deleting task:', error);
+      } finally {
+        analytics.logEvent('deletedTask', {tid: task.id});
       }
     };
     deleteTask();
@@ -46,6 +51,8 @@ const Tasks = ({ tasks, user, tasksRef, firebase }) => {
       });
     } catch (error) {
       console.error('Error editing task:', error);
+    } finally {
+      analytics.logEvent('editedTask', {tid: editedTask.id});
     }
     setIsEditModalOpen(false);
   };
