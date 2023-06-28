@@ -44,7 +44,7 @@ const Goals = ({ tasks }) => {
         <tfoot>
           <tr>
             <td></td>
-            <td>{checksSum}</td>
+            <td>{checksSum !== 0 && checksSum}</td>
           </tr>
         </tfoot>
       </table>

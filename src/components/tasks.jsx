@@ -11,7 +11,7 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
       try {
         await tasksRef.add({
           name: task.name,
-          timesPerWeek: task.timesPerWeek,
+          timesPerWeek: task.timesPerWeek === NaN ? 0 : task.timesPerWeek,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           checks: 0,
           uid: user,
@@ -92,13 +92,10 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
     cursor: 'pointer',
   };
 
-  const createCellStyle = {
-    position: 'relative',
+  const createStyle = {
+    marginTop: '0.5em',
     height: 'calc(3em + 10px)',
     minWidth: '3em',
-  }
-
-  const createStyle = {
     backgroundColor: 'rgba(255, 255, 255, .3)',
     color: 'white',
     fontSize: 'calc(10px + 2vmin)',
@@ -158,13 +155,9 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
               </tr>
             ))
           )}
-          <tr>
-            <td style={createCellStyle}>
-              <button style={createStyle} onClick={() => setIsCreateModalOpen(true)}>Create<br />Task</button>
-            </td>
-          </tr>
         </tbody>
       </table>
+      <button style={createStyle} onClick={() => setIsCreateModalOpen(true)}>Create<br />Task</button>
       <TaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onTaskSubmit={handleTaskCreate} submitString="Create" />
     </div>
   );

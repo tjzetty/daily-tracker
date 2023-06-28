@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
   const [taskName, setTaskName] = useState('');
-  const [timesPerWeek, setTimesPerWeek] = useState('');
+  const [timesPerWeek, setTimesPerWeek] = useState('0');
 
   const handleTaskNameChange = (event) => {
     setTaskName(event.target.value);
@@ -33,7 +33,7 @@ const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
     }
     onTaskSubmit(newTask);
     setTaskName('');
-    setTimesPerWeek('');
+    setTimesPerWeek('0');
   };
 
   if (!isOpen) {

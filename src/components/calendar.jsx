@@ -34,7 +34,7 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
     const updatedColors = [...greenCellColors];
 
     tasks.forEach((task, rowIndex) => {
-      const createdAt = task.createdAt.toDate();
+      const createdAt = task.createdAt ? task.createdAt.toDate() : new Date(); // Handle case of new task
 
       for (let colIndex = 0; colIndex < 7; colIndex++) {
         const cellIndex = rowIndex * 7 + colIndex;
@@ -165,6 +165,7 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
     height: '2em',
     width: '3em',
     maxWidth: '3em',
+    border: '0.5px solid rgba(0, 0, 0, 0)',
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
   };
