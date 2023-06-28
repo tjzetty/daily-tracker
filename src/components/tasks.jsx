@@ -4,6 +4,7 @@ import TaskModal from './task_modal';
 const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleTaskCreate = (task) => {
@@ -40,6 +41,7 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
       }
     };
     deleteTask();
+    setIsDeleteModalOpen(false);
   };
 
   const handleEditTask = async (editedTask) => {
@@ -138,7 +140,7 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
                     <div>
                       <button
                         style={{ ...buttonStyle, top: '35%', backgroundColor: 'red' }}
-                        onClick={() => handleDeleteTask(task)}
+                        onClick={() => setIsDeleteModalOpen(true)}
                       >
                         X
                       </button>
@@ -152,6 +154,7 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
                   )}
                 </td>
                 <TaskModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onTaskSubmit={handleEditTask} submitString="Edit" task={task} />
+                <TaskModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onTaskSubmit={handleDeleteTask} submitString="Delete" task={task} />
               </tr>
             ))
           )}

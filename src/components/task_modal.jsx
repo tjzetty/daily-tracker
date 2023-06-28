@@ -17,6 +17,10 @@ const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (submitString === "Delete") {
+      onTaskSubmit(task);
+      return;
+    }
     let newTask = null;
     const timesPerWeekInt = parseInt(timesPerWeek, 10);
     if (task) {
@@ -43,14 +47,22 @@ const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
   return (
     <div className="modal" style={modalStyle}>
       <div className="modal-content">
-        <h2>Create Task</h2>
+        <h2>{submitString} Task</h2>
         <form onSubmit={handleSubmit}>
+        { submitString === "Delete" ? (
+        <>
+          <p>Do you really want to delete this task?</p>
+          <button type="submit">{submitString}</button>
+          <button type="button" onClick={onClose}>Cancel</button>
+        </>
+        ) : (
+        <>
           <label>
             Task Name:
             <input type="text" value={taskName} onChange={handleTaskNameChange} />
           </label>
           <label>
-            Times/Week:
+            Weekly Goal:
             <input
               type="number"
               value={timesPerWeek}
@@ -61,6 +73,8 @@ const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
           </label>
           <button type="submit">{submitString}</button>
           <button type="button" onClick={onClose}>Cancel</button>
+        </>
+        )}
         </form>
       </div>
     </div>
