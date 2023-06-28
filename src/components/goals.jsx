@@ -8,13 +8,14 @@ const Goals = ({ tasks }) => {
   };
 
   const cellStyle = {
-    height: '3em',
+    height: 'calc(3em + 10px)',
     minWidth: '3em',
     border: '1px solid white', // Add a border to each cell
   };
 
   const headerCellStyle = {
     fontWeight: 'bold',
+    height: 'calc(2em + 15px)',
   };
 
   return (

@@ -82,18 +82,25 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <SignOut auth={auth} />
         {user ? (
-          <div>
-            <img src={user.photoURL} alt="profile" />
-            <h1>{formattedDate}</h1>
-            <TaskTable
-              user={user}
-              tasksRef={tasksRef}
-              calendarRef={calendarRef}
-              firebase={firebase}
-            />
-          </div>
+          <>
+            <div className="Header">
+              <span />
+              <h1>{formattedDate}</h1>
+              <div className="User">
+                <SignOut auth={auth} />
+                <img src={user.photoURL} alt="profile" />
+              </div>
+            </div>
+            <div className="Calendar">
+              <TaskTable
+                user={user}
+                tasksRef={tasksRef}
+                calendarRef={calendarRef}
+                firebase={firebase}
+              />
+            </div>
+          </>
         ) : (
           <SignIn firebase={firebase} auth={auth} analytics={analytics}/>
         )}

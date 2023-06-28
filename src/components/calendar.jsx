@@ -19,7 +19,7 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
             const rowIndex = tasks.findIndex((task) => task.id === tid);
             if (rowIndex !== -1) {
               const cellIndex = rowIndex * 7 + colIndex;
-              updatedColors[cellIndex] = 'green';
+              updatedColors[cellIndex] = '#26a641';
             }
           });
         }
@@ -40,8 +40,8 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
         const cellIndex = rowIndex * 7 + colIndex;
         const currentDate = addDays(startOfWeekDate, colIndex);
 
-        if (currentDate > createdAt && updatedColors[cellIndex] !== 'green' && currentDate < startOfDay(new Date())) {
-          updatedColors[cellIndex] = 'red';
+        if (currentDate > createdAt && updatedColors[cellIndex] !== '#26a641' && currentDate < startOfDay(new Date())) {
+          updatedColors[cellIndex] = '#e44949';
         }
       }
     });
@@ -87,8 +87,8 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
 
   const handleClick = async (index) => {
     const updatedColors = [...cellColors]; // Create a copy of cellColors array
-    const wasGreen = updatedColors[index] === 'green';
-    updatedColors[index] = wasGreen ? '' : 'green'; // Toggle the clicked cell's color
+    const wasGreen = updatedColors[index] === '#26a641';
+    updatedColors[index] = wasGreen ? '' : '#26a641'; // Toggle the clicked cell's color
   
     const colIndex = index % 7;
     const rowIndex = Math.floor(index / 7);
@@ -111,10 +111,12 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
   };
 
   const tableStyle = {
-    borderCollapse: 'collapse',
+    borderCollapse: 'separate',
+    borderSpacing: '10px',
     borderRadius: '8px', // Add border radius to the table
     marginLeft: '0.5em',
     marginRight: '0.5em',
+    marginBottom: '0.5em',
   };
 
   const isCurrentDateColumn = (colIndex) => {
@@ -136,8 +138,8 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
     bottom: '0',
     left: '0',
     right: '0',
-    background: 'radial-gradient(goldenrod 20%, transparent)',
-    borderRadius: '20%',
+    background: 'skyblue',
+    borderRadius: '8px',
     opacity: '0.7',
     zIndex: '-1',
   };
@@ -155,21 +157,32 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
   const cellStyle = {
     height: '3em',
     width: '3em',
-    border: '1px solid white', // Add a border to each cell
+    border: '0.5px solid white', // Add a border to each cell
+    borderRadius: '10%',
   };
 
   const emptyCellStyle = {
-    height: '3em',
+    height: '2em',
     width: '3em',
     maxWidth: '3em',
-    borderTop: '1px solid white', 
-    borderBottom: '1px solid white', 
     whiteSpace: 'nowrap',
     textOverflow: 'ellipsis',
   };
 
   const headerCellStyle = {
     fontWeight: 'bold',
+    height: '2em',
+  };
+
+  const navButtonStyle = {
+    backgroundColor: 'rgba(255, 255, 255, .3)',
+    color: 'white',
+    width: '2em',
+    height: '2em',
+    fontSize: 'calc(10px + 2vmin)',
+    fontWeight: 'bold',
+    borderRadius: '8px',
+    boxShadow: '0px 8px 15px rgba(255, 255, 255, 0.2)',
   };
   
 
@@ -254,7 +267,10 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
               const date = addDays(startOfWeekDate, colIndex);
               const dayOfMonth = format(date, 'd');
               return (
-                <td key={colIndex}>{dayOfMonth}</td>
+                <td key={colIndex} style={getHeaderCellStyle(colIndex)}>
+                  {isCurrentDateColumn(colIndex) && <span style={currentDateGlowStyle}></span>}
+                  {dayOfMonth}
+                </td>
               );
             })}
           </tr>
@@ -262,8 +278,8 @@ const Calendar = ({ analytics, tasks, dbcal, user, tasksRef, calendarRef }) => {
       </table>
 
       <div>
-        <button onClick={previousWeek}>{'<'}</button>
-        <button onClick={nextWeek}>{'>'}</button>
+        <button style={navButtonStyle} onClick={previousWeek}>{'<'}</button>
+        <button style={navButtonStyle} onClick={nextWeek}>{'>'}</button>
       </div>
     </div>
   );

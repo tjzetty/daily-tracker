@@ -58,13 +58,14 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
   };
 
   const tableStyle = {
+    paddingTop: '10px',
     borderCollapse: 'collapse',
     borderRadius: '8px',
   };
 
   const cellStyle = {
     position: 'relative',
-    height: '3em',
+    height: 'calc(3em + 10px)',
     minWidth: '3em',
     border: '1px solid white',
     cursor: 'default',
@@ -72,6 +73,7 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
 
   const headerCellStyle = {
     fontWeight: 'bold',
+    height: 'calc(2em + 15px)',
   };
 
   const buttonStyle = {
@@ -89,6 +91,21 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
     lineHeight: '24px',
     cursor: 'pointer',
   };
+
+  const createCellStyle = {
+    position: 'relative',
+    height: 'calc(3em + 10px)',
+    minWidth: '3em',
+  }
+
+  const createStyle = {
+    backgroundColor: 'rgba(255, 255, 255, .3)',
+    color: 'white',
+    fontSize: 'calc(10px + 2vmin)',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    boxShadow: '0px 8px 15px rgba(255, 255, 255, 0.2)',
+  }
 
   const handleCellHover = (index) => {
     setHoveredIndex(index);
@@ -141,9 +158,13 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
               </tr>
             ))
           )}
+          <tr>
+            <td style={createCellStyle}>
+              <button style={createStyle} onClick={() => setIsCreateModalOpen(true)}>Create<br />Task</button>
+            </td>
+          </tr>
         </tbody>
       </table>
-      <button onClick={() => setIsCreateModalOpen(true)}>Create Task</button>
       <TaskModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} onTaskSubmit={handleTaskCreate} submitString="Create" />
     </div>
   );
