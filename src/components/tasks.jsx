@@ -11,7 +11,7 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
       try {
         await tasksRef.add({
           name: task.name,
-          timesPerWeek: task.timesPerWeek === NaN ? 0 : task.timesPerWeek,
+          timesPerWeek: task.timesPerWeek.isNaN ? 0 : task.timesPerWeek,
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           checks: 0,
           uid: user,
