@@ -40,56 +40,111 @@ const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
     setTimesPerWeek('0');
   };
 
+  const inputStyle = {
+    height: '100%',
+  };
+
   if (!isOpen) {
     return null;
   }
 
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    fontSize: 'calc(10px + 2vmin)',
+    zIndex: '3',
+    backgroundColor: '#333333',
+    padding: '20px',
+    boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
+  };
+  
+  const modalContentStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+  };
+  
+  const formStyle = {
+    display: 'flex',
+    flex: '7',
+    flexDirection: 'column',
+    alignItems: 'center',
+  };
+  
+  const rowStyle = {
+    display: 'flex',
+    width: '100%',
+  };
+  
+  const labelContainer = {
+    flex: '6',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    textAlign: 'left',
+  };
+  
+  const inputContainer = {
+    flex: '4',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  };
+  
   return (
-    <div className="modal" style={modalStyle}>
-      <div className="modal-content">
-        <h2>{submitString} Task</h2>
-        <form onSubmit={handleSubmit}>
-        { submitString === "Delete" ? (
-        <>
-          <p>Do you really want to delete this task?</p>
-          <button type="submit">{submitString}</button>
-          <button type="button" onClick={onClose}>Cancel</button>
-        </>
-        ) : (
-        <>
-          <label>
-            Task Name:
-            <input type="text" value={taskName} onChange={handleTaskNameChange} />
-          </label>
-          <label>
-            Weekly Goal:
-            <input
-              type="number"
-              value={timesPerWeek}
-              onChange={handleTimesPerWeekChange}
-              min="0"
-              max="7"
-            />
-          </label>
-          <button type="submit">{submitString}</button>
-          <button type="button" onClick={onClose}>Cancel</button>
-        </>
-        )}
+    <div style={modalStyle}>
+      <div style={modalContentStyle}>
+        <h2 style={{flex: '3',}}>{submitString} Task</h2>
+        <form onSubmit={handleSubmit} style={formStyle}>
+          {submitString === 'Delete' ? (
+            <>
+              <p>Do you really want to delete this task?</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+                <button type="submit">{submitString}</button>
+                <button type="button" onClick={onClose}>
+                  Cancel
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={rowStyle}>
+                <div style={{ ...labelContainer}}>
+                  <label>Task Name:</label>
+                </div>
+                <div style={{ ...inputContainer}}>
+                  <input style={inputStyle} type="text" value={taskName} onChange={handleTaskNameChange} />
+                </div>
+              </div>
+              <div style={rowStyle}>
+                <div style={{ ...labelContainer, flex: '6' }}>
+                  <label>Weekly Goal:</label>
+                </div>
+                <div style={{ ...inputContainer, flex: '4' }}>
+                  <input
+                    style={inputStyle}
+                    type="number"
+                    value={timesPerWeek}
+                    onChange={handleTimesPerWeekChange}
+                    min="0"
+                    max="7"
+                  />
+                </div>
+              </div>
+              <div>
+                <button type="button" onClick={onClose}>
+                  Cancel
+                </button>
+                <button type="submit">{submitString}</button>
+              </div>
+            </>
+          )}
         </form>
       </div>
     </div>
   );
-};
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  zIndex: '3',
-  backgroundColor: '#333333',
-  padding: '20px',
-  boxShadow: '0 2px 5px rgba(0, 0, 0, 0.3)',
 };
 
 export default TaskModal;
