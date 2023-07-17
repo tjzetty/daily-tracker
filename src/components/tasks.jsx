@@ -3,7 +3,9 @@ import TaskModal from './task_modal';
 
 const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
@@ -27,26 +29,20 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
     setIsCreateModalOpen(false);
   };
 
-  const handleDeleteTask = (task) => {
-    
-    const deleteTask = async () => {
-      const deletedName = task.name;
-      try {
-        await tasksRef.doc(task.id).delete();
-        console.log(`Task, ${deletedName}, deleted successfully!`);
-      } catch (error) {
-        console.error('Error deleting task:', error);
-      } finally {
-        analytics.logEvent('deletedTask', {tid: task.id});
-      }
-    };
-    deleteTask();
+  const handleDeleteTask = async (task) => {
+    try {
+      await tasksRef.doc(task.id).delete();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    } finally {
+      analytics.logEvent('deletedTask', {tid: task.id});
+    }
     setIsDeleteModalOpen(false);
+    setTaskToDelete(null);
   };
 
   const handleEditTask = async (editedTask) => {
     try {
-      console.log(editedTask.id);
       await tasksRef.doc(editedTask.id).update({
         name: editedTask.name,
         timesPerWeek: editedTask.timesPerWeek,
@@ -54,9 +50,10 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
     } catch (error) {
       console.error('Error editing task:', error);
     } finally {
-      analytics.logEvent('editedTask', {tid: editedTask.id});
+      analytics.logEvent('editedTask', { tid: editedTask.id });
     }
     setIsEditModalOpen(false);
+    setTaskToEdit(null);
   };
 
   const tableStyle = {
@@ -140,21 +137,39 @@ const Tasks = ({ analytics, tasks, user, tasksRef, firebase }) => {
                     <div>
                       <button
                         style={{ ...buttonStyle, top: '35%', backgroundColor: 'red' }}
-                        onClick={() => setIsDeleteModalOpen(true)}
+                        onClick={() => {
+                          setTaskToDelete(task);
+                          setIsDeleteModalOpen(true);
+                        }}
                       >
                         X
                       </button>
                       <button
                         style={{ ...buttonStyle, top: '65%', backgroundColor: 'orange' }}
-                        onClick={() => setIsEditModalOpen(true)}
+                        onClick={() => {
+                          setTaskToEdit(task);
+                          setIsEditModalOpen(true);
+                        }}
                       >
                         ~
                       </button>
                     </div>
                   )}
                 </td>
-                <TaskModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} onTaskSubmit={handleEditTask} submitString="Edit" task={task} />
-                <TaskModal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)} onTaskSubmit={handleDeleteTask} submitString="Delete" task={task} />
+                <TaskModal
+                  isOpen={isEditModalOpen && taskToEdit !== null}
+                  onClose={() => setIsEditModalOpen(false)}
+                  onTaskSubmit={handleEditTask}
+                  submitString="Edit"
+                  task={taskToEdit}
+                />
+                <TaskModal
+                  isOpen={isDeleteModalOpen && taskToDelete !== null}
+                  onClose={() => setIsDeleteModalOpen(false)}
+                  onTaskSubmit={handleDeleteTask}
+                  submitString="Delete"
+                  task={taskToDelete}
+                />
               </tr>
             ))
           )}

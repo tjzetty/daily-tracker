@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
   const [taskName, setTaskName] = useState('');
   const [timesPerWeek, setTimesPerWeek] = useState('0');
-
+  
   const handleTaskNameChange = (event) => {
     setTaskName(event.target.value);
   };
@@ -100,12 +100,12 @@ const TaskModal = ({ isOpen, onClose, onTaskSubmit, submitString, task }) => {
         <form onSubmit={handleSubmit} style={formStyle}>
           {submitString === 'Delete' ? (
             <>
-              <p>Do you really want to delete this task?</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-                <button type="submit">{submitString}</button>
+              <p>Do you really want <br /> to delete this task?</p>
+              <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                 <button type="button" onClick={onClose}>
                   Cancel
                 </button>
+                <button type="submit">{submitString}</button>
               </div>
             </>
           ) : (
